@@ -28,9 +28,17 @@ local function Sidebar(props: Props, hooks: any)
 				props.selectStorybook(node.storybook)
 			end
 			props.selectStory(node.instance)
-			setActiveNode(node)
+			setActiveNode(function(prevNode)
+				if prevNode then
+					if prevNode.instance == node.instance then
+						return nil
+					end
+				end
+
+				return node
+			end)
 		end
-	end, {})
+	end, { props.selectStory, props.selectStorybook })
 
 	local storybookNodes = hooks.useMemo(function()
 		return createStoryNodes(props.storybooks)
